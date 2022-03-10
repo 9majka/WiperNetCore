@@ -3,8 +3,6 @@ redirects: on
 source https://api.nuget.org/v3/index.json
 
 
-nuget Microsoft.NET.Test.Sdk
-
 
 
 

@@ -18,7 +18,6 @@ namespace Wiper
 
         public void Start(string rootPath)
         {
-            int i = 0;
             _task = Task.Factory.StartNew(() =>
             {
                 Scan(rootPath);
@@ -79,11 +78,11 @@ namespace Wiper
             }
             catch (UnauthorizedAccessException ex)
             {
-                //Log.Error(ex);
+                Console.WriteLine($"Sc UnauthorizedAccessException {ex.Message}");
             }
             catch (Exception ex)
             {
-                //Log.Error(ex);
+                Console.WriteLine($"Sc Exception {ex.Message}");
             }
             
             return subDirs;
