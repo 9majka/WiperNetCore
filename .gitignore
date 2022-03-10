@@ -1,5 +1,6 @@
 packages
 buildoutput
+dist
 
 # macOS
 .DS_Store
