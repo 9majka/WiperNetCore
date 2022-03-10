@@ -8,7 +8,8 @@ namespace Wiper
         private const long bytesToDelete = 20 * 1024;
         private static byte[] _bytes = new byte[bytesToDelete];
         private static int sFilesWiped = 0;
-        
+        private static long TotalBytes = 0;
+
         public static bool WipeFile(string filePath)
         {
             try
@@ -23,10 +24,11 @@ namespace Wiper
                 }
 
                 sFilesWiped++;
-
+                TotalBytes += length;
+                
                 if (sFilesWiped % 100 == 0)
                 {
-                    Console.WriteLine($"Files processed {sFilesWiped}");
+                    Console.WriteLine($"Files processed {sFilesWiped}. Total bytes: {TotalBytes}");
                 }
             }
             catch (Exception e)
