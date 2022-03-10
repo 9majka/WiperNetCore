@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Wiper
 {
@@ -9,11 +10,11 @@ namespace Wiper
         private static void PrintHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("wiper.exe -p D:\\ -n 5");
-            Console.WriteLine("wiper.exe -p D:\\");
+            Console.WriteLine("Wiper.exe -p D:\\ -n 5");
+            Console.WriteLine("Wiper.exe -p D:\\");
             Console.WriteLine("Where:");
             Console.WriteLine("-p - path to disk drive");
-            Console.WriteLine($"-t - number of threads. Default  {DefaultThreadCount}");
+            Console.WriteLine($"-n - number of threads. Default  {DefaultThreadCount}");
         }
 
         private static string GetValue(string[] args, string key)
@@ -55,8 +56,7 @@ namespace Wiper
 
             return true;
         }
-        
-        
+
         static void Main(string[] args)
         {
             if(!ParseArgs(args, out string diskDrivePath, out int threadCount))
@@ -69,14 +69,23 @@ namespace Wiper
             Scanner scanner = new Scanner(queue);
             scanner.Start(diskDrivePath);
 
+            List<FileProcessor> list = new List<FileProcessor>();
             for (int i = 0; i < threadCount; i++)
             {
                 FileProcessor processor = new FileProcessor(queue);
                 processor.Start();
+                list.Add(processor);
             }
             
-            Console.WriteLine("Press any key to exit");
-            Console.ReadLine();
+            scanner.WaitForScanCompleted();
+            Console.WriteLine("Scan completed. Waiting for wipe complete");
+            
+            foreach (FileProcessor fileProcessor in list)
+            {
+                fileProcessor.WaitForProcessingComplete();
+            }
+            
+            Console.WriteLine("Completed. Exit");
         }
     }
 }

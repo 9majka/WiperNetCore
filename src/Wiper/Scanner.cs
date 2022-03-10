@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Wiper
@@ -10,6 +11,8 @@ namespace Wiper
     {
         private FileQueue _queue;
         private Task _task;
+        private bool _completed = false;
+        private readonly object _scanMonitor = new object();
         
         public Scanner(FileQueue queue)
         {
@@ -44,6 +47,25 @@ namespace Wiper
                 foreach (var subDir in subDirsFound)
                 {
                     subDirsQueue.Enqueue(subDir);
+                }
+            }
+            
+            _queue.NotifyLast();
+
+            lock (_scanMonitor)
+            {
+                _completed = true;
+                Monitor.Pulse(_scanMonitor);
+            }
+        }
+
+        public void WaitForScanCompleted()
+        {
+            lock (_scanMonitor)
+            {
+                while (!_completed)
+                {
+                    Monitor.Wait(_scanMonitor);
                 }
             }
         }
