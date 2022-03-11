@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Wiper
 {
@@ -65,6 +66,9 @@ namespace Wiper
                 return;
             }
 
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            
             FileQueue queue = new FileQueue();
             Scanner scanner = new Scanner(queue);
             scanner.Start(diskDrivePath);
@@ -84,6 +88,9 @@ namespace Wiper
             {
                 fileProcessor.WaitForProcessingComplete();
             }
+            
+            stopwatch.Stop();
+            Console.WriteLine("Elapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
             
             Console.WriteLine("Completed. Exit");
         }
